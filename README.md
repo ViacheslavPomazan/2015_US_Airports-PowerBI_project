@@ -51,10 +51,10 @@ This project provides a comprehensive analysis of the **2015 US Flight Delays an
 5.  **Tops 10 Dashboard:** Quick-view cards showing the most problematic airports by average delay and total cancellation count.
 
 ## 💡 Key Insights
-*   **Hub Performance:** While "Mega Hubs" (like Chicago-ORD and Dallas-DFW) have the highest absolute number of cancellations, smaller regional airports (like Wilmington-ILG) often exhibit higher *average* departure delays.
-*   **Cancellation Drivers:** The "Cancelled Part" analysis reveals that certain regions are significantly more susceptible to weather-related cancellations during winter months.
-*   **NAS vs. Weather:** NAS delays are more consistent throughout the year, whereas weather delays show high volatility, peaking during specific seasonal events.
-*   **Airline Efficiency:** Significant variance in "On-Time Departure Rates" was observed among different carriers, with some airlines maintaining higher efficiency even at congested hubs.
+*   **Season Trends:** Delay duration shows clear seasonality, peaking in winter and summer months.
+*   **Performance by Region:** By region, the share of delayed flights ranges from 30% to 40%, while cancellations account for 1%–3%. There is a slight increase in delays from west to east across the US.
+*   **Hub Performance:** Average Departure Delay decreases consistently from large hubs to smaller airports, even though 9 out of the Top-10 airports by delay are Regional or Local. Average Arrival Delay, on the contrary, is slightly higher at smaller airports. The share of cancelled flights, both Departure and Arrival, is higher at smaller airports.
+*    **Correlations:** Strong correlations (0.6–0.8) exist between Departure/Arrival delays and Airline Delay (stronger at smaller airports), and moderate correlations (0.4–0.6) with Late Aircraft Delay (more pronounced at large hubs).
 
 ## 📁 Repository Structure
 *   `2015 US Airports.pdf` — Static export of the dashboard pages.
