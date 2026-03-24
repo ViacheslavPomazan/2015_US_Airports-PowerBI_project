@@ -6,7 +6,7 @@ This project provides a comprehensive analysis of the **2015 US Flight Delays an
 ## 🎯 Key Objectives
 *   **Identify Trends:** Analyze seasonal and monthly patterns in flight delays and cancellations.
 *   **Root Cause Analysis:** Categorize delays and cancellatios by Weather, NAS (National Airspace System), Security, and Airline factors.
-*   **Geospatial Insights:** Visualize flight performance across the United States using interactive maps.
+*   **Geospatial Insights:** Visualize flight performance across the United States using interactive maps and compare it between regions.
 *   **Comparative Analysis:** Compare performance between "Mega Hubs," "Major Hubs," "Regional," and "Small" airports.
 *   **Statistical Distribution:** Use box plots and correlation charts to understand the variance and relationship between different delay types.
 
@@ -46,7 +46,7 @@ This project provides a comprehensive analysis of the **2015 US Flight Delays an
 2.  **Airports Analysis (Drill-through):** Deep-dive into specific airports (e.g., Nantucket Memorial Airport) to see localized on-time rates, cancellation reasons, and monthly trends.
 3.  **Statistical Insights:**
     *   **Box Plots:** Show the distribution of delays by airport category to identify outliers.
-    *   **Correlation Matrix:** Analyzes how different delay causes (Weather vs. Airline vs. NAS) correlate with airport size.
+    *   **Correlation Chart:** Analyzes how different delay causes (Weather vs. Airline vs. NAS) correlate with airport size.
 4.  **Advanced Filtering:** Filter by Date range, Airline, City, and specific Cancellation Reasons (A, B, C, D).
 5.  **Tops 10 Dashboard:** Quick-view cards showing the most problematic airports by average delay and total cancellation count.
 
