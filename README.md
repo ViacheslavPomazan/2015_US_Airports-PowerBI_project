@@ -17,7 +17,7 @@ This project provides a comprehensive analysis of the **2015 US Flight Delays an
 ## 🛠 Tech Stack
 *   **Tool:** Power BI Desktop
 *   **Data Processing:** Power Query (ETL, data cleaning, and transformation)
-*   **Modeling:** DAX (Data Analysis Expressions) for complex measures such as *Moving Averages, Dynamic Tooltips, and Category-based Correlations*.
+*   **Modeling:** DAX (Data Analysis Expressions) for complex measures and calculated tables.
 *   **Visualization:** Geospatial maps, Box-and-Whisker plots, Bubble charts, and Time-series line charts.
 
 ## 📊 Gallery
@@ -42,6 +42,15 @@ This project provides a comprehensive analysis of the **2015 US Flight Delays an
 
 
 ## 🚀 Main Features & Interactivity
+
+### Data Modeling
+
+<details>
+
+👉<summary><b>Data Model Schema is here</b></summary>
+
+   
+</details>
 1.  **Dynamic Mode Switching:** A single toggle allows users to switch the entire report between **Arrival** and **Departure** metrics.
 2.  **Airports Analysis (Drill-through):** Deep-dive into specific airports (e.g., Nantucket Memorial Airport) to see localized on-time rates, cancellation reasons, and monthly trends.
 3.  **Statistical Insights:**
