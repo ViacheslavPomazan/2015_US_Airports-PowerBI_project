@@ -46,11 +46,93 @@ This project provides a comprehensive analysis of the **2015 US Flight Delays an
 ### Data Modeling
 
 <details>
+<summary><b>👉 Data Model Schema is here</b></summary>
 
-👉<summary><b>Data Model Schema is here</b></summary>
+![airport model](image/airports_model1.png)   
 
-   
 </details>
+
+<details>
+<summary><b>DAX for aggregated calculated table FlightList</b></summary>
+
+```sql
+FlightList =
+    ADDCOLUMNS(
+    SUMMARIZE(
+        flights,
+        flights[FLIGHT_NUMBER],
+        flights[ORIGIN_AIRPORT],
+        flights[DESTINATION_AIRPORT],
+        // "Shceduled Departure Time", MAX(flights[SCH_DEP_TIME]),
+        "Last Flight", MAX(flights[SCHEDULED_DEPARTURE_DATE]),
+        "Last Scheduled Departure Time",
+    VAR MaxDateTime =
+        CALCULATE(
+            MAX(flights[SCHEDULED_DEPARTURE_DATETIME]),
+            -- Забезпечуємо, що MAX виконується для всієї групи FLIGHT_NUMBER
+            ALLEXCEPT(flights, flights[FLIGHT_NUMBER],flights[ORIGIN_AIRPORT])
+        )
+    RETURN
+        TIME(
+            HOUR(MaxDateTime),
+            MINUTE(MaxDateTime),
+            SECOND(MaxDateTime)
+        ),
+        "Last Scheduled Arrrival Time",
+    VAR MaxDateTime1 =
+        CALCULATE(
+            MAX(flights[SCHEDULED_ARRIVAL_DATETIME]),
+            -- Забезпечуємо, що MAX виконується для всієї групи FLIGHT_NUMBER
+            ALLEXCEPT(flights, flights[FLIGHT_NUMBER], flights[ORIGIN_AIRPORT], flights[DESTINATION_AIRPORT])
+        )
+    RETURN
+        TIME(
+            HOUR(MaxDateTime1),
+            MINUTE(MaxDateTime1),
+            SECOND(MaxDateTime1)
+        ),
+        "Airline", MAX(flights[AIRLINE]),
+        "AVG Departure Delay", [AVG Departure Delay],
+        "Flight Count", [Flight Count],
+        "Cancelled Count", [Cancelled Count],
+        "Cancelled Part", [Cancelled Part],
+        "Diverted Count", SUM(flights[DIVERTED]),
+        "AVG Weather Delay", [AVG Weather Delay],
+        "AVG Air System Delay", [AVG Air System Delay],
+        "AVG Security Delay", [AVG Security Delay],
+        "AVG Airline Delay", [AVG Airline Delay],
+        "AVG Late Aircraft Delay", [AVG Late Aircraft Delay],
+        "AVG Arrival Delay",  AVERAGE(flights[ARRIVAL_DELAY]),
+        "AVG Elapsed Time", AVERAGE(flights[ELAPSED_TIME]),
+        "AVG Taxi Out", AVERAGE(flights[TAXI_OUT]),
+        "AVG Taxi In", AVERAGE(flights[TAXI_IN]),
+        "On-Time Arrival Rate", [On-Time  Arrival Rate]
+    ),
+    "On-Time Arrival Count",
+        CALCULATE(
+            COUNT(flights[AIRLINE]),
+            flights[ARRIVAL_DELAY] <= 0 && flights[CANCELLED] <> 1 && flights[DIVERTED] <> 1 )
+    )
+```
+
+</details>
+
+<details>
+<summary><b>DAX for main selector "DEPARTURE"/"ARRIVAL"</b></summary>
+
+```sql
+RoleSwitcher = DATATABLE(
+    "Mode", STRING,
+    "Value", INTEGER,
+    {
+        {"DEPARTURE", 1},
+        {"ARRIVAL", 2}
+    }
+)
+```
+
+</details>
+
 1.  **Dynamic Mode Switching:** A single toggle allows users to switch the entire report between **Arrival** and **Departure** metrics.
 2.  **Airports Analysis (Drill-through):** Deep-dive into specific airports (e.g., Nantucket Memorial Airport) to see localized on-time rates, cancellation reasons, and monthly trends.
 3.  **Statistical Insights:**
