@@ -134,9 +134,10 @@ RoleSwitcher = DATATABLE(
 </details>
 
 ### 🔹DAX Measures
+Approximately 100 measures were developed within this project. Here are a few key examples:
 
 <details>
-<summary><b>DAX measure chain for calculation dynemic metric AVG DEPARTURE/ARRIVAL DELAY  </b></summary>
+<summary><b>DAX measures chain for calculation dynamic metric AVG DEPARTURE/ARRIVAL DELAY  </b></summary>
 
 ```sql
 NoCancelled Depature Delay =
@@ -191,6 +192,85 @@ RETURN
        
         -- By default
         CALCULATE([AVG Departure Delay], REMOVEFILTERS(RoleSwitcher))
+    )
+```
+</details>
+
+<details>
+<summary><b>Calculating the correlation between DEPARTURE/ARRIVAL DELAY and WEATHER DELAY.</b></summary>
+
+```sql
+Correlation Dep/Arr vs Weather =
+VAR Mode = SELECTEDVALUE(RoleSwitcher[Value])
+
+VAR T =
+    FILTER(
+        flights,
+        NOT ISBLANK(flights[ARRIVAL_DELAY]) &&
+        NOT ISBLANK(flights[WEATHER_DELAY]) ||
+        NOT ISBLANK(flights[DEPARTURE_DELAY]) &&
+        NOT ISBLANK(flights[WEATHER_DELAY])
+        // &&
+        // flights[DEPARTURE_DELAY] >= 0
+    )
+
+VAR AvgArr =
+    AVERAGEX(T, flights[ARRIVAL_DELAY])
+
+VAR AvgDep =
+    AVERAGEX(T, flights[DEPARTURE_DELAY])
+
+VAR AvgDelay =
+    AVERAGEX(T, flights[WEATHER_DELAY])
+
+VAR CovarianceArr =
+    AVERAGEX(
+        T,
+        (flights[ARRIVAL_DELAY] - AvgArr)
+            * (flights[WEATHER_DELAY] - AvgDelay)
+    )
+
+VAR CovarianceDep =
+    AVERAGEX(
+        T,
+        (flights[DEPARTURE_DELAY] - AvgDep)
+            * (flights[WEATHER_DELAY] - AvgDelay)
+    )
+
+VAR StdArr =
+    STDEVX.P(T, flights[ARRIVAL_DELAY])
+
+VAR StdDep =
+    STDEVX.P(T, flights[DEPARTURE_DELAY])
+
+VAR StdDelay =
+    STDEVX.P(T, flights[WEATHER_DELAY])
+
+
+VAR CorrelationDep =
+    DIVIDE(CovarianceDep, StdDep * StdDelay)
+
+VAR CorrelationArr =
+    DIVIDE(CovarianceArr, StdArr * StdDelay)
+
+RETURN
+    SWITCH(
+        Mode,
+        1,
+        CALCULATE(
+            CorrelationDep,
+            REMOVEFILTERS(RoleSwitcher) 
+        ),
+       
+        2,
+        CALCULATE(
+            CorrelationArr,
+            USERELATIONSHIP(airports[IATA_CODE], flights[DESTINATION_AIRPORT]),
+            REMOVEFILTERS(RoleSwitcher)
+        ),
+       
+        -- By default
+        CALCULATE(CorrelationDep, REMOVEFILTERS(RoleSwitcher))
     )
 ```
 </details>
