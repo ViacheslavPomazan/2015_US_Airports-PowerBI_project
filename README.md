@@ -43,7 +43,7 @@ This project provides a comprehensive analysis of the **2015 US Flight Delays an
 
 ## 🚀 Main Features & Interactivity
 
-### Data Modeling
+### 🔹Data Modeling
 
 <details>
 <summary><b>👉 Data Model Schema is here</b></summary>
@@ -133,13 +133,79 @@ RoleSwitcher = DATATABLE(
 
 </details>
 
-1.  **Dynamic Mode Switching:** A single toggle allows users to switch the entire report between **Arrival** and **Departure** metrics.
-2.  **Airports Analysis (Drill-through):** Deep-dive into specific airports (e.g., Nantucket Memorial Airport) to see localized on-time rates, cancellation reasons, and monthly trends.
-3.  **Statistical Insights:**
+### 🔹DAX Measures
+
+<details>
+<summary><b>DAX measure chain for calculation dynemic metric AVG DEPARTURE/ARRIVAL DELAY  </b></summary>
+
+```sql
+NoCancelled Depature Delay =
+    CALCULATE(
+        SUM(flights[DEPARTURE_DELAY]),
+        ALL(flights[CANCELLATION_REASON]),
+        flights[CANCELLED] <> 1
+    )
+Total Arrival Delay =
+    CALCULATE(
+        SUM(flights[ARRIVAL_DELAY]),
+        ALL(flights[CANCELLATION_REASON])
+    )
+NoCancelled Flight Count =
+    CALCULATE(
+        COUNT(flights[FLIGHT_NUMBER]),
+        // ALL(flights[CANCELLATION_REASON]),
+        flights[CANCELLED] <> 1 && flights[DIVERTED] <> 1
+    )
+---------------------------------------------------------------------
+
+
+
+AVG Departure Delay =
+    DIVIDE([NoCancelled Depature Delay], [NoCancelled Flight Count])
+AVG Arrival Delay =
+    DIVIDE([Total Arrival Delay], [NoCancelled Flight Count])
+----------------------------------------------------------------------
+
+
+AVG Departure/Arrival Delay =
+VAR SelectedMode = MAX(RoleSwitcher[Value]) -- 1 or 2
+
+RETURN
+    SWITCH(
+        SelectedMode,
+       
+        --  1: Origin Airport (Active Relationship)
+        1,
+        CALCULATE(
+            [AVG Departure Delay],
+            REMOVEFILTERS(RoleSwitcher) -- Clear RoleSwitcher
+        ),
+       
+        -- 2: Destination Airport (activate an inactive connection using USERELATIONSHIP)
+        2,
+        CALCULATE(
+            [AVG Arrival Delay],
+            USERELATIONSHIP(airports[IATA_CODE], flights[DESTINATION_AIRPORT]),
+            REMOVEFILTERS(RoleSwitcher) -- Clear RoleSwitcher
+        ),
+       
+        -- By default
+        CALCULATE([AVG Departure Delay], REMOVEFILTERS(RoleSwitcher))
+    )
+```
+</details>
+
+### 🔹User Interface
+
+*  **Dynamic Mode Switching:** A single toggle allows users to switch the entire report between **Arrival** and **Departure** metrics.
+*  **Airports Analysis (Drill-through):** Deep-dive into specific airports (e.g., Nantucket Memorial Airport) to see localized on-time rates, cancellation reasons, and monthly trends.
+*  **Advanced Filtering:** Filter by Date range, Airline, City, and specific Cancellation Reasons (A, B, C, D).
+
+### 🔹Visualization
+*  **Statistical Insights:**
     *   **Box Plots:** Show the distribution of delays by airport category to identify outliers.
     *   **Correlation Chart:** Analyzes how different delay causes (Weather vs. Airline vs. NAS) correlate with airport size.
-4.  **Advanced Filtering:** Filter by Date range, Airline, City, and specific Cancellation Reasons (A, B, C, D).
-5.  **Tops 10 Dashboard:** Quick-view cards showing the most problematic airports by average delay and total cancellation count.
+*  **Tops 10 Dashboard:** Quick-view cards showing the most problematic airports by average delay and total cancellation count.
 
 ## 💡 Key Insights
 *   **Season Trends:** Delay duration shows clear seasonality, peaking in winter and summer months.
